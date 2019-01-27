@@ -57,6 +57,17 @@ class SectionsActivity : AppCompatActivity() {
         recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, dummySections, twoPane)
     }
 
+    fun showSection(sectionId: Long) {
+        if (twoPane) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.item_detail_container, PagesFragment.newInstance(sectionId))
+                .commit()
+        } else {
+            startActivity(PagesActivity.makeIntent(this, sectionId))
+        }
+    }
+
     class SimpleItemRecyclerViewAdapter(
         private val parentActivity: SectionsActivity,
         private val values: List<Section>,
@@ -69,14 +80,7 @@ class SectionsActivity : AppCompatActivity() {
         init {
             onClickListener = View.OnClickListener { v ->
                 val item = v.tag as Section
-                if (twoPane) {
-                    parentActivity.supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.item_detail_container, PagesFragment.newInstance(item.id))
-                        .commit()
-                } else {
-                    v.context.startActivity(PagesActivity.makeIntent(v.context, item.id))
-                }
+                parentActivity.showSection(item.id)
             }
         }
 
