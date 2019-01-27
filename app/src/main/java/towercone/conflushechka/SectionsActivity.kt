@@ -1,18 +1,17 @@
 package towercone.conflushechka
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_sections.*
-import kotlinx.android.synthetic.main.item_list_content.view.*
 import kotlinx.android.synthetic.main.item_list.*
+import kotlinx.android.synthetic.main.item_list_content.view.*
 
 /**
  * An activity representing a list of Pings. This activity
@@ -33,6 +32,17 @@ class SectionsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sections)
+
+        val data = intent.data
+        if (data != null && data.isHierarchical) {
+            val uri = intent.dataString
+            //Log.d("QWE", uri)
+            val parts = uri.split('/').filter { it.isNotEmpty() }
+            if (parts.size == 4 && parts[2] == "section") {
+                //Log.d("QWE", parts[3])
+                showSection(parts[3].toLong())
+            }
+        }
 
         setSupportActionBar(toolbar)
         toolbar.title = title
