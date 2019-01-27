@@ -36,7 +36,7 @@ class PagesActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            val sectionId = intent.getLongExtra(PagesFragment.ARG_SECTION_ID, -1)
+            val sectionId = intent.getStringExtra(PagesFragment.ARG_SECTION_ID)
 
             supportFragmentManager.beginTransaction()
                 .add(R.id.item_detail_container, PagesFragment.newInstance(sectionId))
@@ -60,7 +60,7 @@ class PagesActivity : AppCompatActivity() {
         }
 
     companion object {
-        fun makeIntent(context: Context, sectionId: Long) = Intent(context, PagesActivity::class.java).apply {
+        fun makeIntent(context: Context, sectionId: String) = Intent(context, PagesActivity::class.java).apply {
             putExtra(PagesFragment.ARG_SECTION_ID, sectionId)
         }
     }

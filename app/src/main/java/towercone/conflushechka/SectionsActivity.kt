@@ -1,7 +1,7 @@
 package towercone.conflushechka
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,15 +33,8 @@ class SectionsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sections)
 
-        val data = intent.data
-        if (data != null && data.isHierarchical) {
-            val uri = intent.dataString
-            //Log.d("QWE", uri)
-            val parts = uri.split('/').filter { it.isNotEmpty() }
-            if (parts.size == 4 && parts[2] == "section") {
-                //Log.d("QWE", parts[3])
-                showSection(parts[3].toLong())
-            }
+        getSectionIdFromDeepLink(intent)?.let {
+            showSection(it)
         }
 
         setSupportActionBar(toolbar)
@@ -60,14 +53,12 @@ class SectionsActivity : AppCompatActivity() {
             twoPane = true
         }
 
-        setupRecyclerView(item_list)
+        myRetrofitService.listSections().call(this) {
+            item_list.adapter = SimpleItemRecyclerViewAdapter(this, it, twoPane)
+        }
     }
 
-    private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.adapter = SimpleItemRecyclerViewAdapter(this, dummySections, twoPane)
-    }
-
-    fun showSection(sectionId: Long) {
+    fun showSection(sectionId: String) {
         if (twoPane) {
             supportFragmentManager
                 .beginTransaction()
@@ -102,7 +93,6 @@ class SectionsActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = values[position]
-            holder.idView.text = item.id.toString()
             holder.contentView.text = item.title
 
             with(holder.itemView) {
@@ -114,8 +104,19 @@ class SectionsActivity : AppCompatActivity() {
         override fun getItemCount() = values.size
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val idView: TextView = view.id_text
             val contentView: TextView = view.content
         }
     }
+}
+
+private fun getSectionIdFromDeepLink(intent: Intent): String? {
+    val data = intent.data
+    if (data != null && data.isHierarchical) {
+        val uri = intent.dataString ?: return null
+        val parts = uri.split('/').filter { it.isNotEmpty() }
+        if (parts.size == 4 && parts[2] == "section") {
+            return parts[3]
+        }
+    }
+    return null
 }

@@ -19,9 +19,10 @@ class PagesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sectionId = arguments!!.getLong(ARG_SECTION_ID)
-        val item = dummySections.find { it.id == sectionId }!!
-        activity?.title = item.title
+        val sectionId = arguments!!.getString(ARG_SECTION_ID)!!
+        myRetrofitService.getSection(sectionId).call(context!!) {
+            activity?.title = it.title
+        }
     }
 
     override fun onCreateView(
@@ -50,9 +51,9 @@ class PagesFragment : Fragment() {
     companion object {
         const val ARG_SECTION_ID = "page_id"
 
-        fun newInstance(sectionId: Long) = PagesFragment().apply {
+        fun newInstance(sectionId: String) = PagesFragment().apply {
             arguments = Bundle().apply {
-                putLong(ARG_SECTION_ID, sectionId)
+                putString(ARG_SECTION_ID, sectionId)
             }
         }
     }
