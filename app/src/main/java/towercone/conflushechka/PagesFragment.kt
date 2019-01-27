@@ -1,10 +1,10 @@
 package towercone.conflushechka
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import kotlinx.android.synthetic.main.fragment_pages.view.*
 
@@ -19,16 +19,9 @@ class PagesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            if (it.containsKey(ARG_SECTION_ID)) {
-                // Load the dummy content specified by the fragment
-                // arguments. In a real-world scenario, use a Loader
-                // to load content from a content provider.
-
-                // item = DummyContent.ITEM_MAP[it.getString(ARG_SECTION_ID)]
-                // activity?.toolbar_layout?.title = item?.content
-            }
-        }
+        val sectionId = arguments!!.getLong(ARG_SECTION_ID)
+        val item = dummySections.find { it.id == sectionId }!!
+        activity?.title = item.title
     }
 
     override fun onCreateView(
